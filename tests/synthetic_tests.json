@@ -1,0 +1,22 @@
+[
+    {
+        "question": "How many customers have at least one invoice where the billing address differs from the customer's address?",
+        "expected_sql": "SELECT COUNT(DISTINCT i.CustomerId) FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId WHERE i.BillingAddress != c.Address OR i.BillingCity != c.City OR i.BillingState != c.State OR i.BillingCountry != c.Country OR i.BillingPostalCode != c.PostalCode;",
+        "expected_answer": "0 customers have at least one invoice where the billing address differs from the customer's address."
+    },
+    {
+        "question": "Which album has the highest total unit price across its tracks?",
+        "expected_sql": "SELECT a.Title, SUM(t.UnitPrice) AS TotalUnitPrice\nFROM Album a\nJOIN Track t ON a.AlbumId = t.AlbumId\nGROUP BY a.AlbumId, a.Title\nORDER BY TotalUnitPrice DESC;",
+        "expected_answer": "The album with the highest total unit price across its tracks is **\"Greatest Hits\"** with a total unit price of 56.43."
+    },
+    {
+        "question": "Which playlist contains the most tracks?",
+        "expected_sql": "SELECT p.Name, COUNT(pt.TrackId) AS track_count\nFROM Playlist p\nJOIN PlaylistTrack pt ON p.PlaylistId = pt.PlaylistId\nGROUP BY p.Name\nORDER BY track_count DESC;",
+        "expected_answer": "The \"Music\" playlist contains the most tracks, with 6,580 tracks."
+    },
+    {
+        "question": "What is the name of the artist for album Id 2?",
+        "expected_sql": "SELECT Name FROM Artist WHERE ArtistId = 2",
+        "expected_answer": "The artist for album Id 2 is **Accept**."
+    }
+]

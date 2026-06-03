@@ -1,0 +1,55 @@
+# direction: right
+
+User: User {
+  shape: person
+}
+
+CLI: agent.py (CLI interface) {
+  shape: rectangle
+  style: { fill: "#f4f4f4" }
+}
+
+Agent_Core: Deep Agent System {
+  shape: package
+  style: { fill: "#e1f5fe" }
+
+  Planner: write_todos tool
+  Toolkit: SQLDatabaseToolkit
+  Memory: FilesystemBackend
+}
+
+LLM: ChatOllama\n(gemma4:e2b) {
+  shape: rectangle
+  style: { fill: "#e8f5e9" }
+}
+
+Database: chinook.db\n(SQLite) {
+  shape: cylinder
+  style: { fill: "#fff3e0" }
+}
+
+Prompts: AGENTS.md &\nSKILL.md {
+  shape: document
+}
+
+# The Execution Flow
+User -> CLI: 1. Asks Natural Language Question
+CLI -> Agent_Core: 2. Parses Args & Invokes Agent
+
+Prompts -> Agent_Core: Loads Guardrails/Instructions
+Agent_Core -> LLM: Connects to Local Model (Temp=0)
+
+Agent_Core.Planner -> LLM: 3. Formulates Step-by-Step Plan
+Agent_Core.Toolkit -> Database: 4. Introspects Schema (sql_db_schema)
+Database -> Agent_Core.Toolkit: Returns Tables/Columns
+
+Agent_Core.Toolkit -> Database: 5. Executes SQL (sql_db_query)
+Database -> Agent_Core.Toolkit: Returns Data Rows
+
+Agent_Core.Memory -> Agent_Core.Memory: 6. Caches Intermediate Results
+
+Agent_Core -> LLM: 7. Passes Data for Synthesis
+LLM -> Agent_Core: Returns Natural Language Answer
+
+Agent_Core -> CLI: 8. Yields Final Answer & Logprobs
+CLI -> User: 9. Displays Formatted Rich Output
