@@ -1,5 +1,5 @@
 ## Project Info
-> "I built a privacy-first, locally-hosted Text-to-SQL AI Agent that translates natural language questions into executable database queries. Beyond just building the agent, I engineered a complete testing infrastructure that generates synthetic test cases and uses an LLM-as-a-judge to evaluate the semantic accuracy of the generated SQL, all while tracing the agent's reasoning process for debugging."
+Text-to-SQL AI Agent that translates natural language questions into executable database queries. Beyond just building the agent, I engineered a complete testing infrastructure that generates synthetic test cases and uses an LLM-as-a-judge to evaluate the semantic accuracy of the generated SQL, all while tracing the agent's reasoning process for debugging."
 
 ---
 
