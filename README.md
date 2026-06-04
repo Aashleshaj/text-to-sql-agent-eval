@@ -1,32 +1,88 @@
-## Project Info
-Text-to-SQL AI Agent that translates natural language questions into executable database queries. Beyond just building the agent, I engineered a complete testing infrastructure that generates synthetic test cases and uses an LLM-as-a-judge to evaluate the semantic accuracy of the generated SQL, all while tracing the agent's reasoning process for debugging."
+# 🤖 Local Text-to-SQL Agent with Ragas Evaluation
+
+An automated, locally-hosted AI agent that translates natural language questions into executable SQL queries, runs them against a database, and evaluates its own performance using a fully local Ragas + Pytest evaluation pipeline.
+
+This project is built for **100% offline execution**, ensuring data privacy by running everything through local LLMs via Ollama, while maintaining enterprise-grade observability using Arize Phoenix.
+
+## ✨ Features
+* **Agentic SQL Generation:** Uses LangChain and Deep Agents to explore database schemas, write SQL, check syntax, and execute queries autonomously.
+* **Fully Local Stack:** Powered entirely by local models (e.g., Qwen, DeepSeek, Llama) using Ollama. No OpenAI API keys required.
+* **Automated AI Grading:** Evaluates the agent's generated SQL against a ground-truth dataset using Ragas (`LLMSQLEquivalence`), determining if the logical execution matches even if the syntax differs.
+* **Resilient Parsing:** Includes custom regex fallbacks to gracefully extract SQL from smaller models (4B-8B parameters) that struggle with strict JSON tool-calling.
+* **Live Observability:** Integrated with Arize Phoenix for real-time tracing of the agent's thought process, tool usage, and database interactions.
+* **Automated Reporting:** Outputs all evaluation scores (Pass/Fail) into a clean `evaluation_results.csv` for data analysis.
 
 ---
 
-## Core Tech Stack
-* **LLM Engine:** Local Ollama running `nemotron-3-nano:4b` (ensures data privacy and zero API costs).
-* **Agent Framework:** LangChain & DeepAgents (for tool calling, database connection, and persistent file-system memory).
-* **Observability:** Arize Phoenix (OpenTelemetry tracing to monitor the agent's thought process).
-* **Evaluation & Testing:** Pytest and Ragas (using `SQLSemanticEquivalence` to grade the agent).
+## 🛠️ Prerequisites
 
----
+1. **Python 3.10+**
+2. **[Ollama](https://ollama.com/)** (Running locally on `http://localhost:11434` or a custom network IP)
+3. **Hardware:** At least 8GB RAM (16GB+ recommended for running 7B-30B parameter models).
 
-## The 3 Main Pillars of Your Project
+### Recommended Local Models
+Pull these models via Ollama before running the project:
+```bash
+# Recommended for the Agent (Strong coding logic)
+ollama run qwen3-coder:30b-a3b-q4_K_M 
+# OR
+ollama run deepseek-coder-v2:lite
 
-### 1. The Deep SQL Agent (`agent.py`)
-This is the brain of the operation. It connects to a SQLite database (`chinook.db`) and uses LangChain's `SQLDatabaseToolkit`. 
-* **Context Aware:** You configured it to sample 3 rows of data from the tables so the LLM understands the *format* of the data before it writes the SQL.
-* **Deterministic:** You intentionally set the model's temperature to `0` to ensure stable, logical code generation.
-* **Agentic Capabilities:** It uses tools to dynamically inspect the schema, write a query, execute it, and return a natural language answer to the user.
+# Recommended for the Ragas Evaluator Judge (Higher parameter for accurate grading)
+ollama run qwen2.5-coder:32b
+1.Clone the repository:
+```
+git clone [https://github.com/yourusername/text-to-sql-agent-eval.git](https://github.com/yourusername/text-to-sql-agent-eval.git)
+cd text-to-sql-agent-eval
+```
+2.Create a virtual environment:
+```
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+3.Database Setup: Ensure the chinook.db SQLite database is located in the root directory.
 
-### 2. Synthetic Data Generation Pipeline (`generate_test_dataset.py`)
-To test your agent, you needed data. Instead of writing tests by hand, you built a pipeline to generate them automatically.
-* **Creative Prompting:** You spun up a *Generator LLM* with a high temperature (`0.8`) and prompted it to act as a QA Engineer, brainstorming unique, complex questions (JOINs, aggregations) based on the database schema.
-* **Ground Truth Creation:** You passed these brainstormed questions to your actual Deep Agent to solve, saving the successful pairs of Questions and SQL into a `synthetic_tests.json` dataset.
-* **Bulletproof Parsing:** You implemented strict Regex constraints to extract clean JSON payloads, even if the local model hallucinated markdown formatting around it.
+🚀 Usage
+1. Interactive CLI Mode
+Test the agent manually by asking it a natural language question. The agent will explore the schema and output the answer.
+```
+python agent.py "Which album has the highest total unit price across its tracks?"
+```
+2. Automated Evaluation Pipeline (Pytest + Ragas)
+Run the automated test suite to grade the agent against the synthetic_tests.json dataset.
+```
+pytest tests/test_agent.py -v -s --cache-clear
+```
+What happens during evaluation?
+1.Pytest feeds a question to the agent.
+2.The agent attempts to generate and execute the SQL.
+3.A custom parser extracts the SQL safely.
+4.Ragas compares the Agent's SQL to the Ground Truth SQL.
+5.If the queries match exactly, it auto-passes. If they differ, the Ragas LLM Judge determines if they are semantically equivalent.
+6.The score (0.0 or 1.0) is appended to evaluation_results.csv.
 
-### 3. Automated Evaluation Suite (`test_agent.py`)
-This is the most impressive part of your project for an enterprise environment. You built a CI/CD-ready test suite using Pytest.
-* **Semantic Equivalence vs. String Matching:** You recognized that comparing two SQL queries purely by text is flawed (e.g., `SELECT name FROM users` vs `SELECT users.name FROM users`). Instead, you integrated **Ragas** to evaluate *semantic equivalence*—using an LLM judge to verify if the logic of the generated query matches the expected query based on the database schema.
-* **Safety Rails:** You implemented a `recursion_limit` of 12 to ensure that if the agent gets stuck in a loop trying to fix a bad query, it fails gracefully rather than freezing the test suite indefinitely.
-* **Strategy Fallbacks:** You wrote custom parsing logic to catch edge cases where smaller models write SQL directly into the chat instead of using formal tool calls.
+📁 Project Structure
+
+├── agent.py                 # Core LangChain Agent logic & Phoenix tracing setup
+├── tests/
+│   ├── test_agent.py        # Pytest framework, Ragas evaluation, and fallback parsing
+│   └── synthetic_tests.json # Ground truth dataset (Questions, Expected SQL, Answers)
+├── chinook.db               # Sample SQLite database
+├── evaluation_results.csv   # Auto-generated report of test scores
+└── README.md
+
+🔍 Observability (Arize Phoenix)
+Every time you run the agent or the test suite, Arize Phoenix captures the exact steps the LLM takes.
+
+Run a query or a test.
+
+Open your browser and navigate to: http://localhost:6007
+
+Click on the text-to-sql-agent project to view the spans, prompts, and database errors.
+
+⚠️ Known Quirks & Workarounds
+Ragas Collections Bug: Currently, newer Ragas collections metrics crash when paired with custom local LLM wrappers. This project intentionally utilizes the legacy from ragas.metrics import LLMSQLEquivalence to bypass this issue while maintaining accurate local scoring.
+
+Agent Infinite Loops: Small local models (under 7B) may get caught in recursion loops if they make syntax errors. A hard cutoff of recursion_limit: 25 is enforced in the test suite to prevent hanging.
+
+Windows File Lock: Pytest occasionally throws a background PermissionError on teardown due to Phoenix locking the local SQLite database. This does not affect test execution or results.
