@@ -1,0 +1,36 @@
+Question,Expected_SQL,Generated_SQL,Score
+How many customers have at least one invoice where the billing address differs from the customer's address?,SELECT COUNT(DISTINCT i.CustomerId) FROM Invoice i JOIN Customer c ON i.CustomerId = c.CustomerId WHERE i.BillingAddress != c.Address OR i.BillingCity != c.City OR i.BillingState != c.State OR i.BillingCountry != c.Country OR i.BillingPostalCode != c.PostalCode;,"SELECT COUNT(DISTINCT c.""CustomerId"") 
+FROM Customer c
+JOIN Invoice i ON c.""CustomerId"" = i.""CustomerId""
+WHERE (
+    c.""Address"" != i.""BillingAddress"" OR
+    c.""City"" != i.""BillingCity"" OR
+    c.""State"" != i.""BillingState"" OR
+    c.""Country"" != i.""BillingCountry"" OR
+    c.""PostalCode"" != i.""BillingPostalCode""
+)",0
+Which album has the highest total unit price across its tracks?,"SELECT a.Title, SUM(t.UnitPrice) AS TotalUnitPrice
+FROM Album a
+JOIN Track t ON a.AlbumId = t.AlbumId
+GROUP BY a.AlbumId, a.Title
+ORDER BY TotalUnitPrice DESC;","SELECT 
+    a.""Title"" AS AlbumTitle,
+    SUM(t.""UnitPrice"") AS TotalUnitPrice
+FROM Album a
+JOIN Track t ON a.""AlbumId"" = t.""AlbumId""
+GROUP BY a.""AlbumId"", a.""Title""
+ORDER BY TotalUnitPrice DESC
+LIMIT 1",0
+Which playlist contains the most tracks?,"SELECT p.Name, COUNT(pt.TrackId) AS track_count
+FROM Playlist p
+JOIN PlaylistTrack pt ON p.PlaylistId = pt.PlaylistId
+GROUP BY p.Name
+ORDER BY track_count DESC;","SELECT 
+    p.""Name"" AS PlaylistName,
+    COUNT(pt.""TrackId"") AS TrackCount
+FROM Playlist p
+JOIN PlaylistTrack pt ON p.""PlaylistId"" = pt.""PlaylistId""
+GROUP BY p.""PlaylistId"", p.""Name""
+ORDER BY TrackCount DESC
+LIMIT 5",0
+What is the name of the artist for album Id 2?,SELECT Name FROM Artist WHERE ArtistId = 2,SELECT Name FROM Artist WHERE ArtistId = 2,1.0

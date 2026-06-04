@@ -47,7 +47,7 @@ def generate_synthetic_tests(num_cases=4):
 
     # Generator LLM: Only responsible for brainstorming creative questions
     llm = ChatOllama(
-        model="nemotron-3-nano:4b", 
+        model="qwen3-coder:30b-a3b-q4_K_M", 
         temperature=0.8, # Keep high for creative question variety
         base_url="http://192.168.1.157:11434",
         num_ctx=32192,
