@@ -10,7 +10,8 @@ from datasets import Dataset
 from ragas import evaluate
 from langchain_ollama import ChatOllama
 from ragas.llms import LangchainLLMWrapper
-from ragas.metrics.collections import SQLSemanticEquivalence
+# from ragas.metrics.collections import SQLSemanticEquivalence
+# from ragas.metrics import LLMSQLEquivalence
 
 # 1. --- PATH MANIPULATION MUST HAPPEN HERE ---
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,18 +24,45 @@ from agent import create_sql_deep_agent, init_tracing
 
 # --- Helper Functions ---
 def run_agent_test(agent, question: str):
-    """Programmatic invocation for the test framework."""
+    print(f"\n\n================ LIVE AGENT TRACE ================")
+    
+    current_state = None
     try:
-        # Enforce an 12-thought limit so a bad query can't freeze your entire test session
-        return agent.invoke(
+        # Using stream_mode="values" yields the full graph state after every single step
+        for step in agent.stream(
             {"messages": [{"role": "user", "content": question}]},
-            config={"recursion_limit": 12}
-        )
+            # config={"recursion_limit": 40},
+            stream_mode="values" 
+        ):
+            current_state = step
+            messages = step.get("messages", [])
+            
+            if messages:
+                last_msg = messages[-1]
+                role = getattr(last_msg, "type", type(last_msg).__name__)
+                content = getattr(last_msg, "content", "")
+                
+                print(f"\n[{role.upper()}] says:")
+                if content:
+                    print(f"{content}")
+                
+                # Print any tools the model tries to use
+                if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
+                    print(f"-> 🛠️ ATTEMPTING TO USE TOOL: {last_msg.tool_calls}")
+                    
+        print("==================================================\n")
+        return current_state
+        
     except Exception as e:
-        print(f"\n  -> ⚠️ Test Agent hit safety cutoff or loop limit: {e}")
-        # Return a dummy state so the script can gracefully fail the assertion and move to the next test
-        return {"messages": [{"role": "assistant", "content": "Failed to resolve query within step limit."}]}
-
+        print(f"\n[SYSTEM] ⚠️ Agent hit safety cutoff: {e}")
+        print("==================================================\n")
+        
+        # If it crashes, return whatever thoughts we managed to capture before the crash!
+        if current_state:
+            return current_state
+            
+        return {"messages": [{"role": "assistant", "content": "Failed to resolve query."}]}
+    
 def extract_sql_and_answer(output_state: dict):
     """
     Parses the LangGraph state dictionary to extract the final natural 
@@ -120,10 +148,12 @@ def test_agent_text_to_sql(agent, test_case):
     # 2. Extract the intermediate SQL and final answer
     actual_answer, generated_sql = extract_sql_and_answer(output_state)
     
-    # --- ADD THIS DEBUG PRINT ---
-    print(f"\n[DEBUG] Question: {test_case['question']}")
-    print(f"[DEBUG] Agent's Raw Text Response: {actual_answer}")
-    print(f"[DEBUG] Extracted SQL: '{generated_sql}'\n")
+    # --- DEBUG PRINT ---
+    with open("agent_debug_logs.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(f"\n{'='*40}\n")
+        log_file.write(f"QUESTION: {test_case['question']}\n")
+        log_file.write(f"RAW AGENT RESPONSE: {actual_answer}\n")
+        log_file.write(f"EXTRACTED SQL: '{generated_sql}'\n")
     # ----------------------------
   
     # Fallback assertion: Ensure the agent actually generated SQL
@@ -136,38 +166,66 @@ def test_agent_text_to_sql(agent, test_case):
         "ground_truth": [test_case["expected_answer"]],
         "response": [generated_sql],         
         "reference": [test_case["expected_sql"]],
-        # NEW REQUIREMENT: Ragas needs context about the database schema to evaluate SQL logic
         "reference_contexts": [["Chinook schema tables: Album, Artist, Customer, Employee, Genre, Invoice, InvoiceLine, MediaType, Playlist, PlaylistTrack, Track"]]  
     }
     dataset = Dataset.from_dict(data)
 
-    # 4. Initialize Ragas Judge using the native LangChain Wrapper
-    # FIXED: Added the correct IP base_url and removed the invalid provider argument
+    # 4. Initialize the legacy Langchain wrapper (Removed format="json")
     ragas_llm = LangchainLLMWrapper(
         ChatOllama(
-            model="nemotron-3-nano:4b", 
+            model="qwen3-coder:30b-a3b-q4_K_M",
             base_url="http://192.168.1.157:11434",
             temperature=0
         )
     )
 
-    # 5. Run Ragas Evaluation
-    # FIXED: Removed the literal '...' placeholder and passed the LLM directly
-    metric = SQLSemanticEquivalence(llm=ragas_llm)
+    # 5. Run Ragas Evaluation 
+    from ragas.metrics import LLMSQLEquivalence
+    metric = LLMSQLEquivalence()
     
     evaluation_result = evaluate(
-        dataset=dataset, 
-        metrics=[metric], 
-        llm=ragas_llm 
+        dataset=dataset,
+        metrics=[metric],
+        llm=ragas_llm
     )
-    
-    # 6. Extract scores and assert
+
+    # 6. Extract scores
     scores = evaluation_result.to_pandas().iloc[0]
-    
-    print(f"\nGenerated SQL: {generated_sql}")
-    
-    # Note: The output key changes slightly when using the legacy metric
     sql_score = scores.get('llm_sql_equivalence', 0)
-    print(f"SQL Score: {sql_score}")
     
+    # --- SMART BYPASS ---
+    # If the queries match exactly, bypass the AI Judge and award a perfect score!
+    expected_clean = test_case["expected_sql"].strip().lower()
+    generated_clean = generated_sql.strip().lower()
+    
+    if expected_clean == generated_clean:
+        sql_score = 1.0
+    # --------------------
+
+    print(f"\nGenerated SQL: {generated_sql}")
+    print(f"SQL Score: {sql_score}")
+
+    # --- SAVE TO DATAFRAME & CSV (BEFORE ASSERTION) ---
+    import pandas as pd
+    
+    csv_file = "evaluation_results.csv"
+    
+    # Create a small DataFrame for this test case
+    result_df = pd.DataFrame([{
+        "Question": test_case["question"],
+        "Expected_SQL": test_case["expected_sql"],
+        "Generated_SQL": generated_sql,
+        "Score": sql_score
+    }])
+    
+    # Append it to the CSV file
+    if not os.path.exists(csv_file):
+        result_df.to_csv(csv_file, index=False)
+    else:
+        result_df.to_csv(csv_file, mode='a', header=False, index=False)
+        
+    print(f"✅ Saved result to {csv_file}")
+    # --------------------------------------------------
+
+    # 7. Finally, run the assertion!
     assert sql_score >= 0.8, f"SQL logic mismatch. Agent wrote: {generated_sql}"

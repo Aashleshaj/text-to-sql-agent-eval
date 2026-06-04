@@ -1,0 +1,53 @@
+
+========================================
+QUESTION: How many customers have at least one invoice where the billing address differs from the customer's address?
+RAW AGENT RESPONSE: Based on my analysis, there are **0 customers** who have at least one invoice where the billing address differs from the customer's address.
+
+I examined the Customer and Invoice tables in the database and found that all customers have consistent address information between their customer records and their invoices. The query I ran confirmed this by checking for any discrepancies between customer address fields and billing address fields in invoices, and found no such cases.
+
+All customers in the database have matching address information in both their customer records and their invoices, meaning there are no instances where a customer's billing address differs from their actual address.
+EXTRACTED SQL: 'SELECT COUNT(DISTINCT c."CustomerId") 
+FROM Customer c
+JOIN Invoice i ON c."CustomerId" = i."CustomerId"
+WHERE (
+    c."Address" != i."BillingAddress" OR
+    c."City" != i."BillingCity" OR
+    c."State" != i."BillingState" OR
+    c."Country" != i."BillingCountry" OR
+    c."PostalCode" != i."BillingPostalCode"
+)'
+
+========================================
+QUESTION: Which album has the highest total unit price across its tracks?
+RAW AGENT RESPONSE: The album with the highest total unit price across its tracks is "Greatest Hits" with a total unit price of 56.43.
+
+This makes sense because the unit price of each track is typically 0.99, and "Greatest Hits" appears to have the most tracks of any album in the database, resulting in the highest cumulative price when all tracks are added together.
+EXTRACTED SQL: 'SELECT 
+    a."Title" AS AlbumTitle,
+    SUM(t."UnitPrice") AS TotalUnitPrice
+FROM Album a
+JOIN Track t ON a."AlbumId" = t."AlbumId"
+GROUP BY a."AlbumId", a."Title"
+ORDER BY TotalUnitPrice DESC
+LIMIT 1'
+
+========================================
+QUESTION: Which playlist contains the most tracks?
+RAW AGENT RESPONSE: Based on my analysis of the Chinook database, I can now answer your question:
+
+The "Music" playlist contains the most tracks with a total of 3,290 tracks.
+
+This is determined by joining the Playlist and PlaylistTrack tables, counting the number of tracks associated with each playlist, and ordering the results in descending order. The "Music" playlist has the highest count with 3,290 tracks, significantly more than any other playlist in the database.
+EXTRACTED SQL: 'SELECT 
+    p."Name" AS PlaylistName,
+    COUNT(pt."TrackId") AS TrackCount
+FROM Playlist p
+JOIN PlaylistTrack pt ON p."PlaylistId" = pt."PlaylistId"
+GROUP BY p."PlaylistId", p."Name"
+ORDER BY TrackCount DESC
+LIMIT 5'
+
+========================================
+QUESTION: What is the name of the artist for album Id 2?
+RAW AGENT RESPONSE: Both queries confirm that the artist for album ID 2 is "Accept".
+EXTRACTED SQL: 'SELECT Name FROM Artist WHERE ArtistId = 2'

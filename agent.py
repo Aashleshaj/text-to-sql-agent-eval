@@ -51,8 +51,8 @@ def create_sql_deep_agent():
     db = SQLDatabase.from_uri(f"sqlite:///{db_path}", sample_rows_in_table_info=3)
 
     # Initialize Claude Sonnet 4.5 for toolkit initialization
-    # model = ChatAnthropic(model="claude-sonnet-4-5-20250929", temperature=0)
-    OLLAMA_MODEL = "nemotron-3-nano:4b"
+    # model = ChatAnthropic(model="nemotron-3-nano:4b", temperature=0)
+    OLLAMA_MODEL = "qwen3-coder:30b-a3b-q4_K_M"
     
     model = ChatOllama(
         model=OLLAMA_MODEL,  # Swap with your chosen local model
