@@ -32,7 +32,7 @@ ollama run deepseek-coder-v2:lite
 ollama run qwen2.5-coder:32b
 1.Clone the repository:
 ```
-git clone [https://github.com/yourusername/text-to-sql-agent-eval.git](https://github.com/yourusername/text-to-sql-agent-eval.git)
+git clone https://github.com/Aashleshaj/text-to-sql-agent-eval.git
 cd text-to-sql-agent-eval
 ```
 2.Create a virtual environment:
