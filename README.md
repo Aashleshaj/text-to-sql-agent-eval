@@ -22,12 +22,12 @@ This project is built for **100% offline execution**, ensuring data privacy by r
 
 ### Recommended Local Models
 Pull these models via Ollama before running the project:
-```bash
+```
 # Recommended for the Agent (Strong coding logic)
 ollama run qwen3-coder:30b-a3b-q4_K_M 
 # OR
 ollama run deepseek-coder-v2:lite
-
+```
 # Recommended for the Ragas Evaluator Judge (Higher parameter for accurate grading)
 ollama run qwen2.5-coder:32b
 1.Clone the repository:
@@ -62,7 +62,7 @@ What happens during evaluation?
 6.The score (0.0 or 1.0) is appended to evaluation_results.csv.
 
 📁 Project Structure
-
+```
 ├── agent.py                 # Core LangChain Agent logic & Phoenix tracing setup
 ├── tests/
 │   ├── test_agent.py        # Pytest framework, Ragas evaluation, and fallback parsing
@@ -70,7 +70,7 @@ What happens during evaluation?
 ├── chinook.db               # Sample SQLite database
 ├── evaluation_results.csv   # Auto-generated report of test scores
 └── README.md
-
+```
 🔍 Observability (Arize Phoenix)
 Every time you run the agent or the test suite, Arize Phoenix captures the exact steps the LLM takes.
 
@@ -81,8 +81,8 @@ Open your browser and navigate to: http://localhost:6007
 Click on the text-to-sql-agent project to view the spans, prompts, and database errors.
 
 ⚠️ Known Quirks & Workarounds
-Ragas Collections Bug: Currently, newer Ragas collections metrics crash when paired with custom local LLM wrappers. This project intentionally utilizes the legacy from ragas.metrics import LLMSQLEquivalence to bypass this issue while maintaining accurate local scoring.
+Ragas Collections Bug: Currently, newer Ragas collections metrics crash when paired with custom local LLM wrappers. This project intentionally utilizes the legacy from ragas.metrics import LLMSQLEquivalence to bypass this issue while maintaining accurate local scoring.<br>
 
-Agent Infinite Loops: Small local models (under 7B) may get caught in recursion loops if they make syntax errors. A hard cutoff of recursion_limit: 25 is enforced in the test suite to prevent hanging.
+Agent Infinite Loops: Small local models (under 7B) may get caught in recursion loops if they make syntax errors. A hard cutoff of recursion_limit: 25 is enforced in the test suite to prevent hanging.<br>
 
-Windows File Lock: Pytest occasionally throws a background PermissionError on teardown due to Phoenix locking the local SQLite database. This does not affect test execution or results.
+Windows File Lock: Pytest occasionally throws a background PermissionError on teardown due to Phoenix locking the local SQLite database. This does not affect test execution or results.<br>
