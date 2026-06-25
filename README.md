@@ -4,6 +4,7 @@ An automated, locally-hosted AI agent that translates natural language questions
 
 This project is built for **100% offline execution**, ensuring data privacy by running everything through local LLMs via Ollama, while maintaining enterprise-grade observability using Arize Phoenix.
 
+![Text-To-SQL-Agent-Eval Architecture Flow](data/flowchart.png)
 ## ✨ Features
 * **Agentic SQL Generation:** Uses LangChain and Deep Agents to explore database schemas, write SQL, check syntax, and execute queries autonomously.
 * **Fully Local Stack:** Powered entirely by local models (e.g., Qwen, DeepSeek, Llama) using Ollama. No OpenAI API keys required.
