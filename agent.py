@@ -47,7 +47,8 @@ def create_sql_deep_agent():
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Connect to Chinook database
-    db_path = os.path.join(base_dir, "chinook.db")
+    # db_path = os.path.join(base_dir, "chinook.db")
+    db_path = os.path.join(base_dir, "london_transport.db")
     db = SQLDatabase.from_uri(f"sqlite:///{db_path}", sample_rows_in_table_info=3)
 
     # Initialize Claude Sonnet 4.5 for toolkit initialization
@@ -98,15 +99,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python agent.py "What are the top 5 best-selling artists?"
-  python agent.py "Which employee generated the most revenue by country?"
-  python agent.py "How many customers are from Canada?"
+  python agent.py "Which boroughs currently have Good Service on every line?"
+  python agent.py "What's the estimated GVA at risk across all of London right now?"
+  python agent.py "Which disruption cause has the highest average severity?"
         """,
     )
     parser.add_argument(
         "question",
         type=str,
-        help="Natural language question to answer using the Chinook database",
+        help="Natural language question to answer using the London Transport database",
     )
 
     args = parser.parse_args()
