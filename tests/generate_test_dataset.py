@@ -8,6 +8,7 @@ from langchain_community.utilities import SQLDatabase
 from langchain_core.prompts import PromptTemplate
 # from agent import create_sql_deep_agent
 import phoenix as px
+from phoenix.client import Client
 
 # Add the parent directory (project root) to the Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -41,16 +42,16 @@ def generate_synthetic_tests(num_cases=4):
     print("[Tracing] Starting Phoenix server...")
     init_tracing()
 
-    db_path = os.path.join(project_root, "chinook.db")
+    db_path = os.path.join(project_root, "london_transport.db")
     db = SQLDatabase.from_uri(f"sqlite:///{db_path}")
     schema = db.get_table_info()
 
     # Generator LLM: Only responsible for brainstorming creative questions
     llm = ChatOllama(
-        model="qwen3-coder:30b-a3b-q4_K_M", 
+        model="glm-4.7-flash:q4_K_M", 
         temperature=0.8, # Keep high for creative question variety
-        base_url="http://192.168.1.157:11434",
-        num_ctx=32192,
+        base_url="http://192.168.1.158:11434",
+        num_ctx=64000,
         format="json"               
     )
 
@@ -69,7 +70,7 @@ def generate_synthetic_tests(num_cases=4):
 
     EXAMPLE OUTPUT:
     {{
-        "question": "Which customers spent more than $40 in total?"
+        "question": "What columns does the BoroughSummary table have?"
     }}
 
     Return ONLY a valid JSON object with the exact key: "question". Do not write the SQL.
@@ -151,9 +152,9 @@ def generate_synthetic_tests(num_cases=4):
     print("\n[Tracing] Waiting 5 seconds for background traces to flush...")
     time.sleep(5) # CRITICAL: Gives the background thread time to save the logs
     
-    try:
-        # Use the explicit Client to fetch from the local server we started
-        client = px.Client() 
+    try:        
+        # Point it to the local server port (6007) you defined in agent.py
+        client = Client(endpoint="http://127.0.0.1:6007") 
         df = client.get_spans_dataframe()
         
         if df is not None and not df.empty:
