@@ -52,14 +52,14 @@ def create_sql_deep_agent():
 
     # Initialize Claude Sonnet 4.5 for toolkit initialization
     # model = ChatAnthropic(model="nemotron-3-nano:4b", temperature=0)
-    OLLAMA_MODEL = "qwen3-coder:30b-a3b-q4_K_M"
+    OLLAMA_MODEL = "glm-4.7-flash:q4_K_M"
     
     model = ChatOllama(
         model=OLLAMA_MODEL,  # Swap with your chosen local model
         temperature=0,             # Text-to-SQL requires 0 temperature for stability
-        base_url="http://192.168.1.157:11434",
-        num_ctx=32192,             # Ensure enough context for schema and query generation
-        timeout=10,
+        base_url="http://192.168.1.158:11434",
+        num_ctx=64000,             # Ensure enough context for schema and query generation
+        timeout=20,
         validate_model_on_init=True,
         logprobs=True,
         stream=True

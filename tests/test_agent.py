@@ -166,15 +166,15 @@ def test_agent_text_to_sql(agent, test_case):
         "ground_truth": [test_case["expected_answer"]],
         "response": [generated_sql],         
         "reference": [test_case["expected_sql"]],
-        "reference_contexts": [["Chinook schema tables: Album, Artist, Customer, Employee, Genre, Invoice, InvoiceLine, MediaType, Playlist, PlaylistTrack, Track"]]  
+        "reference_contexts": [["london_transport.db schema tables: LineStatus (every line's current status, mode, severity, borough), Disruption (currently-disrupted lines with classified cause), BoroughSummary (one row per borough — disruption rate, avg severity, GVA), BoroughDailyTrend (borough x day, growing history), DisruptionCause (incidents grouped by root cause), ModeSummary (one row per transport mode), BoroughRisk (composite risk score, risk band, estimated GVA at risk)"]]  
     }
     dataset = Dataset.from_dict(data)
 
     # 4. Initialize the legacy Langchain wrapper (Removed format="json")
     ragas_llm = LangchainLLMWrapper(
         ChatOllama(
-            model="qwen3-coder:30b-a3b-q4_K_M",
-            base_url="http://192.168.1.157:11434",
+            model="glm-4.7-flash:q4_K_M",
+            base_url="http://192.168.1.158:11434",
             temperature=0
         )
     )
