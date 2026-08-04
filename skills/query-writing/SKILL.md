@@ -40,15 +40,11 @@ Use `sql_db_schema` for EACH table to find join columns and needed fields.
 ### 4. Validate and Execute
 Check all JOINs have conditions, GROUP BY is correct, then run query.
 
-## Example: Revenue by Country
+## Example: Which boroughs currently have Severe Delays?
 ```sql
-SELECT
-    c.Country,
-    ROUND(SUM(i.Total), 2) as TotalRevenue
-FROM Invoice i
-INNER JOIN Customer c ON i.CustomerId = c.CustomerId
-GROUP BY c.Country
-ORDER BY TotalRevenue DESC
+SELECT borough, disruption_rate_pct, total_gva_m
+FROM BoroughSummary
+ORDER BY disruption_rate_pct DESC
 LIMIT 5;
 ```
 
