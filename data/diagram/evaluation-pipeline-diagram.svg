@@ -1,0 +1,53 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 950 980' width='950' height='980'>
+<defs>
+  <marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'>
+    <path d='M0,0 L10,5 L0,10 z' fill='#57606a'/>
+  </marker>
+</defs>
+<rect x='0' y='0' width='950' height='980' fill='#ffffff'/>
+<text x='475.0' y='34' text-anchor='middle' font-size='20' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Evaluation Pipeline — pytest + Ragas</text>
+<rect x='280' y='60' width='340' height='70' rx='10' ry='10' fill='#1f6feb' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='14.5' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='95.0'>synthetic_tests.json</tspan></text>
+<text x='450' y='115' text-anchor='middle' font-size='11.5' font-weight='500' fill='#dbe8ff' font-family='Segoe UI, Helvetica, Arial, sans-serif'>question + ground-truth SQL</text>
+<path d='M450,130 L450,170' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<rect x='230' y='170' width='440' height='66' rx='10' ry='10' fill='#24292f' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='197.0'>pytest feeds the question to the Deep Agent</tspan></text>
+<text x='450' y='218' text-anchor='middle' font-size='11.5' font-weight='500' fill='#c9d1d9' font-family='Segoe UI, Helvetica, Arial, sans-serif'>agent generates and executes SQL</text>
+<path d='M450,236 L450,276' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<rect x='230' y='276' width='440' height='66' rx='10' ry='10' fill='#9e6a03' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='303.0'>Custom SQL parser extracts the query</tspan></text>
+<text x='450' y='324' text-anchor='middle' font-size='11.5' font-weight='500' fill='#fde9c8' font-family='Segoe UI, Helvetica, Arial, sans-serif'>regex fallback for small local models</text>
+<path d='M450,342 L450,382' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<polygon points='450,382.0 630.0,440 450,498.0 270.0,440' fill='#ffffff' stroke='#57606a' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='432.0'>Exact match to</tspan></text>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='452.0'>ground-truth SQL?</tspan></text>
+<path d='M630,440 L700,440' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<text x='668' y='424' text-anchor='middle' font-size='12.5' font-weight='700' fill='#238636' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Yes</text>
+<path d='M450,498 L450,545' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<text x='478' y='520' text-anchor='middle' font-size='12.5' font-weight='700' fill='#cf222e' font-family='Segoe UI, Helvetica, Arial, sans-serif'>No</text>
+<rect x='230' y='545' width='440' height='74' rx='10' ry='10' fill='#cf222e' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='575.0'>Ragas LLMSQLEquivalence judge</tspan></text>
+<text x='450' y='597' text-anchor='middle' font-size='11.5' font-weight='500' fill='#ffd7d5' font-family='Segoe UI, Helvetica, Arial, sans-serif'>qwen2.5-coder:32b</text>
+<path d='M450,619 L450,659' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<polygon points='450,659.0 630.0,717 450,775.0 270.0,717' fill='#ffffff' stroke='#57606a' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='709.0'>Semantically</tspan></text>
+<text x='450' text-anchor='middle' font-size='13.5' font-weight='600' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='729.0'>equivalent?</tspan></text>
+<path d='M630,717 L700,717' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<text x='668' y='701' text-anchor='middle' font-size='12.5' font-weight='700' fill='#238636' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Yes</text>
+<path d='M450,775 L450,815' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<text x='478' y='800' text-anchor='middle' font-size='12.5' font-weight='700' fill='#cf222e' font-family='Segoe UI, Helvetica, Arial, sans-serif'>No</text>
+<rect x='700' y='405' width='170' height='70' rx='10' ry='10' fill='#238636' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='785' text-anchor='middle' font-size='15' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='785' y='433.0'>Pass</tspan></text>
+<text x='785' y='453' text-anchor='middle' font-size='11.5' font-weight='500' fill='#d7f5df' font-family='Segoe UI, Helvetica, Arial, sans-serif'>score = 1.0</text>
+<rect x='700' y='682' width='170' height='70' rx='10' ry='10' fill='#238636' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='785' text-anchor='middle' font-size='15' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='785' y='710.0'>Pass</tspan></text>
+<text x='785' y='730' text-anchor='middle' font-size='11.5' font-weight='500' fill='#d7f5df' font-family='Segoe UI, Helvetica, Arial, sans-serif'>score = 1.0</text>
+<rect x='365' y='815' width='170' height='70' rx='10' ry='10' fill='#57606a' stroke='#1b1f24' stroke-width='1.5'/>
+<text x='450' text-anchor='middle' font-size='15' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='450' y='843.0'>Fail</tspan></text>
+<text x='450' y='863' text-anchor='middle' font-size='11.5' font-weight='500' fill='#e2e5e9' font-family='Segoe UI, Helvetica, Arial, sans-serif'>score = 0.0</text>
+<path d='M870,440 L890,440 L890,940 L560,940' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M785,752 L785,940 L560,940' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M450,885 L450,940 L440,940' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M300,914.04 L300,963.96 A130.0,14.04 0 0 0 560,963.96 L560,914.04 A130.0,14.04 0 0 0 300,914.04 Z' fill='#1b1f24' stroke='#1b1f24' stroke-width='1.5'/><path d='M300,914.04 A130.0,14.04 0 0 0 560,914.04' fill='none' stroke='#1b1f24' stroke-width='1.2' opacity='0.6'/>
+<text x='430' text-anchor='middle' font-size='13.5' font-weight='600' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='430' y='942.0'>evaluation_results.csv</tspan></text>
+</svg>

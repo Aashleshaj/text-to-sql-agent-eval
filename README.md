@@ -12,97 +12,15 @@ The agent currently queries a **London Transport reliability & economic-impact d
 
 The diagram below shows the full path: from the upstream London Transport data repo, through the local SQLite database, into the LangChain **Deep Agent**, and out through observability and evaluation.
 
-```mermaid
-flowchart TB
-    subgraph SRC["🚇 Upstream Data Source"]
-        TFL["London_Transport_Reliability_and_Economic_Impact repo\n(GitHub Actions refresh every 15 min)"]
-    end
-
-    subgraph THIS["📦 text-to-sql-agent-eval (this repo)"]
-        FETCH["fetch_db.py\nDownloads latest .db over HTTPS"]
-        DB[("london_transport.db\n(local SQLite file)")]
-
-        subgraph AGENT["Deep Agent (agent.py)"]
-            CLI["CLI / run_agent_test()\nNatural language question"]
-            TOOLKIT["SQLDatabaseToolkit\n(schema explore, write SQL, check, execute)"]
-            LLM["Local LLM via Ollama\nglm-4.7-flash (agent)"]
-            AGENTS_MD["AGENTS.md\nAgent identity & instructions"]
-            SKILLS["skills/\nquery-writing, schema-exploration"]
-        end
-
-        PHOENIX["Arize Phoenix\nOpenTelemetry tracing :6007"]
-
-        subgraph EVAL["Evaluation Pipeline (pytest)"]
-            TESTS["tests/synthetic_tests.json\nQuestion + Ground-truth SQL"]
-            PARSER["Custom SQL parser\n(regex fallback for small models)"]
-            RAGAS["Ragas LLMSQLEquivalence\nJudge: qwen2.5-coder:32b"]
-            CSV[("evaluation_results.csv\nPass/Fail scores")]
-        end
-    end
-
-    TFL -- "raw.githubusercontent.com" --> FETCH
-    FETCH -- "writes" --> DB
-    CLI --> AGENTS_MD
-    CLI --> SKILLS
-    CLI --> TOOLKIT
-    TOOLKIT <-- "SELECT / schema introspection" --> DB
-    TOOLKIT <--> LLM
-    AGENT -. "spans / traces" .-> PHOENIX
-
-    TESTS --> CLI
-    CLI --> PARSER
-    PARSER -- "generated SQL" --> RAGAS
-    TESTS -- "ground-truth SQL" --> RAGAS
-    RAGAS --> CSV
-
-    style TFL fill:#1f6feb,color:#fff
-    style DB fill:#238636,color:#fff
-    style LLM fill:#9e6a03,color:#fff
-    style PHOENIX fill:#8250df,color:#fff
-    style RAGAS fill:#cf222e,color:#fff
-```
+![Architecture and data flow diagram](./data/diagram/architecture-diagram.svg)
 
 ### How a single question flows through the system
 
-```mermaid
-sequenceDiagram
-    participant U as User (CLI)
-    participant A as Deep Agent
-    participant T as SQLDatabaseToolkit
-    participant D as london_transport.db
-    participant L as Local LLM (Ollama)
-    participant P as Arize Phoenix
-
-    U->>A: python agent.py "Which boroughs have Good Service on every line?"
-    A->>P: emit trace span (start)
-    A->>L: plan + generate SQL using schema context
-    L-->>A: draft SQL query
-    A->>T: check_sql / run_sql
-    T->>D: SELECT ... FROM lines JOIN boroughs ...
-    D-->>T: rows
-    T-->>A: query result
-    A->>L: synthesize natural-language answer
-    L-->>A: final answer
-    A->>P: emit trace span (end)
-    A-->>U: 🟢 Answer panel printed to console
-```
+![Single question flow diagram](./data/diagram/query-flow-diagram.svg)
 
 ### Evaluation pipeline (pytest + Ragas)
 
-```mermaid
-flowchart LR
-    A["synthetic_tests.json\nquestion + expected SQL"] --> B["pytest test_agent.py"]
-    B --> C["Agent generates & executes SQL"]
-    C --> D["Custom parser extracts SQL\n(handles non-JSON tool calls)"]
-    D --> E{"Exact match to\nground-truth SQL?"}
-    E -- "Yes" --> F["Auto-pass ✅ score = 1.0"]
-    E -- "No" --> G["Ragas LLMSQLEquivalence judge\n(qwen2.5-coder:32b)"]
-    G --> H{"Semantically\nequivalent?"}
-    H -- "Yes" --> F
-    H -- "No" --> I["Fail ❌ score = 0.0"]
-    F --> J[("evaluation_results.csv")]
-    I --> J
-```
+![Evaluation pipeline diagram](./data/diagram/evaluation-pipeline-diagram.svg)
 
 ---
 
