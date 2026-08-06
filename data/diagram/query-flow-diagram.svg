@@ -1,0 +1,56 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 620' width='1000' height='620'>
+<defs>
+  <marker id='arrow' viewBox='0 0 10 10' refX='9' refY='5' markerWidth='7' markerHeight='7' orient='auto-start-reverse'>
+    <path d='M0,0 L10,5 L0,10 z' fill='#57606a'/>
+  </marker>
+</defs>
+<rect x='0' y='0' width='1000' height='620' fill='#ffffff'/>
+<text x='500.0' y='34' text-anchor='middle' font-size='20' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'>How a Single Question Flows Through the Agent</text>
+<rect x='60' y='80' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#1f6feb' stroke-width='2'/>
+<circle cx='90' cy='128.0' r='20' fill='#1f6feb'/>
+<text x='90' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='90' y='128.0'>1</tspan></text>
+<text x='295.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='295.0' y='118.0'>User (CLI)</tspan></text>
+<text x='295.0' y='144' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Asks a natural-language question</text>
+<rect x='540' y='80' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#8250df' stroke-width='2'/>
+<circle cx='570' cy='128.0' r='20' fill='#8250df'/>
+<text x='570' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='570' y='128.0'>2</tspan></text>
+<text x='775.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='775.0' y='118.0'>Deep Agent</tspan></text>
+<text x='775.0' y='144' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Starts an Arize Phoenix trace span</text>
+<rect x='60' y='216' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#9e6a03' stroke-width='2'/>
+<circle cx='90' cy='264.0' r='20' fill='#9e6a03'/>
+<text x='90' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='90' y='264.0'>3</tspan></text>
+<text x='295.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='295.0' y='254.0'>Local LLM (Ollama)</tspan></text>
+<text x='295.0' y='280' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Plans and drafts SQL from schema context</text>
+<rect x='540' y='216' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#238636' stroke-width='2'/>
+<circle cx='570' cy='264.0' r='20' fill='#238636'/>
+<text x='570' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='570' y='264.0'>4</tspan></text>
+<text x='775.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='775.0' y='254.0'>SQLDatabaseToolkit</tspan></text>
+<text x='775.0' y='280' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Checks and runs the generated SQL</text>
+<rect x='60' y='352' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#238636' stroke-width='2'/>
+<circle cx='90' cy='400.0' r='20' fill='#238636'/>
+<text x='90' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='90' y='400.0'>5</tspan></text>
+<text x='295.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='295.0' y='390.0'>london_transport.db</tspan></text>
+<text x='295.0' y='416' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Executes the SELECT and returns rows</text>
+<rect x='540' y='352' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#9e6a03' stroke-width='2'/>
+<circle cx='570' cy='400.0' r='20' fill='#9e6a03'/>
+<text x='570' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='570' y='400.0'>6</tspan></text>
+<text x='775.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='775.0' y='390.0'>Local LLM (Ollama)</tspan></text>
+<text x='775.0' y='416' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Synthesizes a natural-language answer</text>
+<rect x='60' y='488' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#8250df' stroke-width='2'/>
+<circle cx='90' cy='536.0' r='20' fill='#8250df'/>
+<text x='90' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='90' y='536.0'>7</tspan></text>
+<text x='295.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='295.0' y='526.0'>Deep Agent</tspan></text>
+<text x='295.0' y='552' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Ends the Phoenix trace span</text>
+<rect x='540' y='488' width='420' height='96' rx='10' ry='10' fill='#ffffff' stroke='#1f6feb' stroke-width='2'/>
+<circle cx='570' cy='536.0' r='20' fill='#1f6feb'/>
+<text x='570' text-anchor='middle' font-size='16' font-weight='700' fill='#ffffff' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='570' y='536.0'>8</tspan></text>
+<text x='775.0' text-anchor='middle' font-size='14.5' font-weight='700' fill='#1b1f24' font-family='Segoe UI, Helvetica, Arial, sans-serif'><tspan x='775.0' y='526.0'>User (CLI)</tspan></text>
+<text x='775.0' y='552' text-anchor='middle' font-size='12.5' font-weight='500' fill='#57606a' font-family='Segoe UI, Helvetica, Arial, sans-serif'>Sees the final answer printed to console</text>
+<path d='M480,128.0 L540,128.0' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M750.0,176 L750.0,196.0 L270.0,196.0 L270.0,216' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M480,264.0 L540,264.0' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M750.0,312 L750.0,332.0 L270.0,332.0 L270.0,352' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M480,400.0 L540,400.0' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M750.0,448 L750.0,468.0 L270.0,468.0 L270.0,488' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+<path d='M480,536.0 L540,536.0' fill='none' stroke='#57606a' stroke-width='2' marker-end='url(#arrow)'/>
+</svg>
