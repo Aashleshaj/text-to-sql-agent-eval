@@ -63,7 +63,7 @@ Run `python fetch_db.py` any time you want to re-sync against the latest data be
 
 ```bash
 # Agent model (strong coding logic)
-ollama run qwen3-coder:30b-a3b-q4_K_M
+ollama run glm-4.7-flash:q4_K_M
 # OR
 ollama run deepseek-coder-v2:lite
 
@@ -143,7 +143,6 @@ pytest tests/test_agent.py -v -s --cache-clear
 ├── data/
 │   └── flowchart.png          # Original architecture diagram
 ├── agent.d2                   # D2 source for the architecture diagram
-├── chinook.db                 # Sample SQLite database (offline testing)
 ├── london_transport.db        # Live London Transport database (fetched, not hand-edited)
 ├── evaluation_results.csv     # Auto-generated report of test scores
 ├── pyproject.toml / uv.lock   # Project configuration & locked dependencies
