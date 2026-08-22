@@ -66,6 +66,7 @@ flowchart TB
 
 ```mermaid
 sequenceDiagram
+    autonumber
     participant U as User (CLI)
     participant A as Deep Agent
     participant T as SQLDatabaseToolkit
