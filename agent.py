@@ -53,7 +53,7 @@ def create_sql_deep_agent():
 
     # Initialize Claude Sonnet 4.5 for toolkit initialization
     # model = ChatAnthropic(model="nemotron-3-nano:4b", temperature=0)
-    OLLAMA_MODEL = "glm-4.7-flash:q4_K_M
+    OLLAMA_MODEL = "glm-4.7-flash:q4_K_M"
     
     model = ChatOllama(
         model=OLLAMA_MODEL,  # Swap with your chosen local model
