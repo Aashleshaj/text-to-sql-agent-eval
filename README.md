@@ -11,7 +11,6 @@ The agent currently queries a **London Transport reliability & economic-impact d
 ## 📐 Architecture — Data flows
 
 The diagram below shows the full path: from the upstream London Transport data repo, through the local SQLite database, into the LangChain **Deep Agent**, and out through observability and evaluation.
-
 ```mermaid
 flowchart TB
     subgraph SRC["🚇 Upstream Data Source"]
